@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,11 +26,13 @@ public class MainActivity extends AppCompatActivity {
         falseButton = findViewById(R.id.false_button);
 
         trueButton.setOnClickListener(view -> {
-
+            Toast.makeText(getApplicationContext(), R.string.correct_toast, Toast.LENGTH_SHORT)
+                    .show();
         });
 
         falseButton.setOnClickListener(view -> {
-
+            Toast.makeText(getApplicationContext(), R.string.incorrect_toast, Toast.LENGTH_SHORT)
+                    .show();
         });
 
     }
