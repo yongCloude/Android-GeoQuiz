@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Question> questionBank;
     private int currentIndex;
+    private int answeredNum;
+    private int correctNum;
 
     public MainActivity() {
 
@@ -34,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         this.nextButton = null;
         this.previosButton = null;
         this.currentIndex = 0;
+
+        this.answeredNum = 0;
+        this.correctNum = 0;
 
         questionBank = new ArrayList<>();
         questionBank.add(new Question(R.string.question_australia, true));
@@ -131,14 +136,24 @@ public class MainActivity extends AppCompatActivity {
         boolean correctAnswer = questionBank.get(currentIndex).isAnswer();
 
         int messageResId;
-        if(userAnswer == correctAnswer){
-            messageResId = R.string.correct_toast;
-        } else{
-            messageResId = R.string.incorrect_toast;
+        if(questionBank.get(currentIndex).isAnswered() == false){
+            if(userAnswer == correctAnswer){
+                messageResId = R.string.correct_toast;
+                correctNum += 1;
+            } else{
+                messageResId = R.string.incorrect_toast;
+            }
+            answeredNum += 1;
+            questionBank.get(currentIndex).setAnswered(true);
+            Toast.makeText(getApplicationContext(), messageResId, Toast.LENGTH_SHORT)
+                    .show();
         }
 
-        Toast.makeText(getApplicationContext(), messageResId, Toast.LENGTH_LONG)
-                .show();
+        if(answeredNum == questionBank.size()){
+            double result = (double) correctNum / questionBank.size() * 100;
+            Toast.makeText(getApplicationContext(), "your score is = " + result, Toast.LENGTH_SHORT)
+                    .show();
+        }
     }
 
 
