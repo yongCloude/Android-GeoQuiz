@@ -3,6 +3,7 @@ package com.bignerdranch.android.geoquiz;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +14,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String TAG = "MainActivity";
+
     private Button trueButton;
     private Button falseButton;
     private Button nextButton;
@@ -22,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Question> questionBank;
     private int currentIndex;
+    private int answeredNum;
+    private int correctNum;
 
     public MainActivity() {
 
@@ -31,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         this.nextButton = null;
         this.previosButton = null;
         this.currentIndex = 0;
+
+        this.answeredNum = 0;
+        this.correctNum = 0;
 
         questionBank = new ArrayList<>();
         questionBank.add(new Question(R.string.question_australia, true));
@@ -44,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate(Bundle savedInstanceState) called");
         setContentView(R.layout.activity_main);
 
 
@@ -84,6 +93,36 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop() called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
+    }
+
     private void moveIndex(int i) {
         currentIndex = i;
     }
@@ -97,14 +136,24 @@ public class MainActivity extends AppCompatActivity {
         boolean correctAnswer = questionBank.get(currentIndex).isAnswer();
 
         int messageResId;
-        if(userAnswer == correctAnswer){
-            messageResId = R.string.correct_toast;
-        } else{
-            messageResId = R.string.incorrect_toast;
+        if(questionBank.get(currentIndex).isAnswered() == false){
+            if(userAnswer == correctAnswer){
+                messageResId = R.string.correct_toast;
+                correctNum += 1;
+            } else{
+                messageResId = R.string.incorrect_toast;
+            }
+            answeredNum += 1;
+            questionBank.get(currentIndex).setAnswered(true);
+            Toast.makeText(getApplicationContext(), messageResId, Toast.LENGTH_SHORT)
+                    .show();
         }
 
-        Toast.makeText(getApplicationContext(), messageResId, Toast.LENGTH_LONG)
-                .show();
+        if(answeredNum == questionBank.size()){
+            double result = (double) correctNum / questionBank.size() * 100;
+            Toast.makeText(getApplicationContext(), "your score is = " + result, Toast.LENGTH_SHORT)
+                    .show();
+        }
     }
 
 
