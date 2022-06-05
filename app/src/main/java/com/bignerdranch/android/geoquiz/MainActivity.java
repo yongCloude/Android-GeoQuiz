@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         this.trueButton = null;
         this.falseButton = null;
         this.nextButton = null;
-        this.currentIndex = 0;
+        moveIndex(0);
 
         questionBank = new ArrayList<>();
         questionBank.add(new Question(R.string.question_australia, true));
@@ -51,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
         falseButton = findViewById(R.id.false_button);
         nextButton = findViewById(R.id.next_button);
 
+        questionTextView.setOnClickListener(view -> {
+            moveIndex((currentIndex + 1) % questionBank.size());
+            updateQuestion();
+        });
+
         trueButton.setOnClickListener(view -> {
             checkAnswer(true);
         });
@@ -60,12 +65,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         nextButton.setOnClickListener(view -> {
-            currentIndex = (currentIndex + 1) % questionBank.size();
+            moveIndex((currentIndex + 1) % questionBank.size());
             updateQuestion();
         });
 
         updateQuestion();
 
+    }
+
+    private void moveIndex(int i) {
+        currentIndex = i;
     }
 
     private void updateQuestion() {
@@ -86,4 +95,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), messageResId, Toast.LENGTH_LONG)
                 .show();
     }
+
+
 }
