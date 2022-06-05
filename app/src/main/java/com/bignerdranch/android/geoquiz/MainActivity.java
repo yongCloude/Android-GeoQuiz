@@ -52,13 +52,11 @@ public class MainActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.next_button);
 
         trueButton.setOnClickListener(view -> {
-            Toast.makeText(getApplicationContext(), R.string.correct_toast, Toast.LENGTH_SHORT)
-                    .show();
+            checkAnswer(true);
         });
 
         falseButton.setOnClickListener(view -> {
-            Toast.makeText(getApplicationContext(), R.string.incorrect_toast, Toast.LENGTH_SHORT)
-                    .show();
+            checkAnswer(false);
         });
 
         nextButton.setOnClickListener(view -> {
@@ -73,5 +71,19 @@ public class MainActivity extends AppCompatActivity {
     private void updateQuestion() {
         int questionTextResId = questionBank.get(currentIndex).getTestResId();
         questionTextView.setText(questionTextResId);
+    }
+
+    private void checkAnswer(boolean userAnswer) {
+        boolean correctAnswer = questionBank.get(currentIndex).isAnswer();
+
+        int messageResId;
+        if(userAnswer == correctAnswer){
+            messageResId = R.string.correct_toast;
+        } else{
+            messageResId = R.string.incorrect_toast;
+        }
+
+        Toast.makeText(getApplicationContext(), messageResId, Toast.LENGTH_LONG)
+                .show();
     }
 }
