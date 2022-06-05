@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private Button trueButton;
     private Button falseButton;
     private Button nextButton;
+    private Button previosButton;
 
     private TextView questionTextView;
 
@@ -28,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
         this.trueButton = null;
         this.falseButton = null;
         this.nextButton = null;
-        moveIndex(0);
+        this.previosButton = null;
+        this.currentIndex = 0;
 
         questionBank = new ArrayList<>();
         questionBank.add(new Question(R.string.question_australia, true));
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         trueButton = findViewById(R.id.true_button);
         falseButton = findViewById(R.id.false_button);
         nextButton = findViewById(R.id.next_button);
+        previosButton = findViewById(R.id.previous_button);
 
         questionTextView.setOnClickListener(view -> {
             moveIndex((currentIndex + 1) % questionBank.size());
@@ -68,6 +71,14 @@ public class MainActivity extends AppCompatActivity {
             moveIndex((currentIndex + 1) % questionBank.size());
             updateQuestion();
         });
+
+        previosButton.setOnClickListener(view -> {
+            if(currentIndex > 0){
+                moveIndex((currentIndex - 1) % questionBank.size());
+                updateQuestion();
+            }
+        });
+
 
         updateQuestion();
 
