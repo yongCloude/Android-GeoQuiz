@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Button falseButton;
     private Button nextButton;
     private Button previosButton;
+    private Button cheatButton;
 
     private TextView questionTextView;
     private QuizViewModel quizViewModel;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         this.falseButton = null;
         this.nextButton = null;
         this.previosButton = null;
+        this.cheatButton = null;
 
         this.questionTextView = null;
         this.quizViewModel = null;
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         falseButton = findViewById(R.id.false_button);
         nextButton = findViewById(R.id.next_button);
         previosButton = findViewById(R.id.previous_button);
+        cheatButton = findViewById(R.id.cheat_button);
 
         questionTextView.setOnClickListener(view -> {
             quizViewModel.moveCurrentIndex(1);
@@ -86,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
                 quizViewModel.moveCurrentIndex(-1);
                 updateQuestion();
             }
+        });
+
+        cheatButton.setOnClickListener(view -> {
+            // start CheatActivity
         });
 
 
