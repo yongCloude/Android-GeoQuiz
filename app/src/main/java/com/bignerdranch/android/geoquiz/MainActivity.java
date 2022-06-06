@@ -1,5 +1,7 @@
 package com.bignerdranch.android.geoquiz;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -17,6 +19,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
+    public static final String KEY_INDEX = "index";
 
     private Button trueButton;
     private Button falseButton;
@@ -25,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView questionTextView;
     private QuizViewModel quizViewModel;
-
 
 
     public MainActivity() {
@@ -44,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate(Bundle savedInstanceState) called");
         setContentView(R.layout.activity_main);
+
+        if(!savedInstanceState.isEmpty()){
+            quizViewModel.moveCurrentIndex(savedInstanceState.getInt(KEY_INDEX, 0));
+        }
 
 
         quizViewModel = QuizViewModel.getInstance();
@@ -116,6 +122,14 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "onDestroy() called");
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState");
+        outState.putInt(KEY_INDEX, quizViewModel.getCurrentIndex());
+    }
+
 
     private void updateQuestion() {
 
