@@ -1,6 +1,9 @@
 package com.bignerdranch.android.geoquiz;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,12 +12,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.security.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
+    public static final String KEY_INDEX = "index";
 
     private Button trueButton;
     private Button falseButton;
@@ -22,31 +27,18 @@ public class MainActivity extends AppCompatActivity {
     private Button previosButton;
 
     private TextView questionTextView;
+    private QuizViewModel quizViewModel;
 
-    private List<Question> questionBank;
-    private int currentIndex;
-    private int answeredNum;
-    private int correctNum;
 
     public MainActivity() {
-
-        this.questionTextView = null;
         this.trueButton = null;
         this.falseButton = null;
         this.nextButton = null;
         this.previosButton = null;
-        this.currentIndex = 0;
 
-        this.answeredNum = 0;
-        this.correctNum = 0;
+        this.questionTextView = null;
+        this.quizViewModel = null;
 
-        questionBank = new ArrayList<>();
-        questionBank.add(new Question(R.string.question_australia, true));
-        questionBank.add(new Question(R.string.question_oceans, true));
-        questionBank.add(new Question(R.string.question_mideast, false));
-        questionBank.add(new Question(R.string.question_africa, false));
-        questionBank.add(new Question(R.string.question_americas, true));
-        questionBank.add(new Question(R.string.question_asia, true));
     }
 
     @Override
@@ -54,6 +46,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate(Bundle savedInstanceState) called");
         setContentView(R.layout.activity_main);
+
+        if(!savedInstanceState.isEmpty()){
+            quizViewModel.moveCurrentIndex(savedInstanceState.getInt(KEY_INDEX, 0));
+        }
+
+
+        quizViewModel = QuizViewModel.getInstance();
+        Log.d(TAG, "GOT a QuizViewModel: $quizViewModel");
 
 
         questionTextView = findViewById(R.id.question_text_view);
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         previosButton = findViewById(R.id.previous_button);
 
         questionTextView.setOnClickListener(view -> {
-            moveIndex((currentIndex + 1) % questionBank.size());
+            quizViewModel.moveCurrentIndex(1);
             updateQuestion();
         });
 
@@ -77,13 +77,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         nextButton.setOnClickListener(view -> {
-            moveIndex((currentIndex + 1) % questionBank.size());
+            quizViewModel.moveCurrentIndex(1);
             updateQuestion();
         });
 
         previosButton.setOnClickListener(view -> {
-            if(currentIndex > 0){
-                moveIndex((currentIndex - 1) % questionBank.size());
+            if(quizViewModel.getCurrentIndex() > 0){
+                quizViewModel.moveCurrentIndex(-1);
                 updateQuestion();
             }
         });
@@ -123,34 +123,39 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onDestroy() called");
     }
 
-    private void moveIndex(int i) {
-        currentIndex = i;
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState");
+        outState.putInt(KEY_INDEX, quizViewModel.getCurrentIndex());
     }
 
+
     private void updateQuestion() {
-        int questionTextResId = questionBank.get(currentIndex).getTestResId();
+
+        int questionTextResId = quizViewModel.getCurrentQuestion().getTestResId();
         questionTextView.setText(questionTextResId);
     }
 
     private void checkAnswer(boolean userAnswer) {
-        boolean correctAnswer = questionBank.get(currentIndex).isAnswer();
+        boolean correctAnswer = quizViewModel.getCurrentQuestion().isAnswer();
 
         int messageResId;
-        if(questionBank.get(currentIndex).isAnswered() == false){
+        if(quizViewModel.getCurrentQuestion().isAnswered() == false){
             if(userAnswer == correctAnswer){
                 messageResId = R.string.correct_toast;
-                correctNum += 1;
+                quizViewModel.setCorrectNum(quizViewModel.getCorrectNum() + 1);
             } else{
                 messageResId = R.string.incorrect_toast;
             }
-            answeredNum += 1;
-            questionBank.get(currentIndex).setAnswered(true);
+            quizViewModel.setAnsweredNum(quizViewModel.getAnsweredNum() + 1);
+            quizViewModel.getCurrentQuestion().setAnswered(true);
             Toast.makeText(getApplicationContext(), messageResId, Toast.LENGTH_SHORT)
                     .show();
         }
 
-        if(answeredNum == questionBank.size()){
-            double result = (double) correctNum / questionBank.size() * 100;
+        if(quizViewModel.getAnsweredNum() == quizViewModel.getQuestionBankSize()){
+            double result = (double) quizViewModel.getCorrectNum() / quizViewModel.getQuestionBankSize() * 100;
             Toast.makeText(getApplicationContext(), "your score is = " + result, Toast.LENGTH_SHORT)
                     .show();
         }
