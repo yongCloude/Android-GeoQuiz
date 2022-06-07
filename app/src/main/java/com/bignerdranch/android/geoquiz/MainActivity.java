@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             // start CheatActivity
 
             boolean answerIsTrue = quizViewModel.getCurrentQuestion().isAnswer();
-            Intent intent = CheatActivity.newIntent(getApplicationContext(), answerIsTrue);
+            Intent intent = CheatActivity.newIntent(getApplicationContext(), answerIsTrue, quizViewModel.isCheater());
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeClipRevealAnimation(view, 0, 0, view.getWidth(), view.getHeight());
                 activityResultLauncher.launch(intent, options);
