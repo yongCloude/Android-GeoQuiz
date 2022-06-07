@@ -11,6 +11,7 @@ import android.widget.TextView;
 public class CheatActivity extends AppCompatActivity {
 
     public static final String EXTRA_ANSWER_IS_TRUE = "com.bignerdranch.android.geoquiz.answer_is_true";
+    public static final String EXTRA_ANSWER_SHOWN = "com.bignerdranch.android.geoquiz.answer_shown";
 
     private boolean answerIsTrue = false;
 
@@ -41,7 +42,13 @@ public class CheatActivity extends AppCompatActivity {
             }
 
             answerTextView.setText(answerText);
+            setAnswerShownResult(true);
         });
+    }
+
+    private void setAnswerShownResult(boolean isAnswerShown){
+        Intent data = new Intent().putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
+        setResult(MainActivity.RESULT_CODE_CHEAT,data);
     }
 
 
