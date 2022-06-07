@@ -3,6 +3,7 @@ package com.bignerdranch.android.geoquiz;
 public class CheatViewModel {
 
     private boolean isAnswerShown = false;
+    private int cheatAvailableCount = 3;
 
     private CheatViewModel(){
 
@@ -20,5 +21,13 @@ public class CheatViewModel {
 
     public void setAnswerShown(boolean answerShown) {
         isAnswerShown = answerShown;
+    }
+
+    public int getCheatAvailableCount() {
+        return cheatAvailableCount;
+    }
+
+    public void decreaseCheatAvailableCount(){
+        this.cheatAvailableCount -= 1;
     }
 }
