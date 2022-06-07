@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
         cheatButton.setOnClickListener(view -> {
             // start CheatActivity
-            Intent intent = new Intent(getApplicationContext(), CheatActivity.class);
+            boolean answerIsTrue = quizViewModel.getCurrentQuestion().isAnswer();
+            Intent intent = CheatActivity.newIntent(getApplicationContext(), answerIsTrue);
             startActivity(intent);
         });
 
