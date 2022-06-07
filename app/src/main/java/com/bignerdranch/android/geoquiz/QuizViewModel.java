@@ -12,10 +12,11 @@ public class QuizViewModel extends ViewModel {
     public static final String TAG = "QuizViewModel";
 
     private List<Question> questionBank;
+    private List<Boolean> isCheater;
     private int currentIndex;
     private int answeredNum;
     private int correctNum;
-    private boolean isCheater = false;
+
 
 
     private QuizViewModel() {
@@ -32,6 +33,12 @@ public class QuizViewModel extends ViewModel {
         questionBank.add(new Question(R.string.question_africa, false));
         questionBank.add(new Question(R.string.question_americas, true));
         questionBank.add(new Question(R.string.question_asia, true));
+
+        isCheater = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            isCheater.add(false);
+        }
+
     }
 
     private static class LazyHolder {
@@ -82,10 +89,11 @@ public class QuizViewModel extends ViewModel {
     }
 
     public boolean isCheater() {
-        return isCheater;
+        return isCheater.get(currentIndex);
     }
 
     public void setCheater(boolean cheater) {
-        isCheater = cheater;
+        isCheater.remove(currentIndex);
+        isCheater.add(currentIndex, cheater);
     }
 }
