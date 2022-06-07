@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate(Bundle savedInstanceState) called");
         setContentView(R.layout.activity_main);
 
-        if(!savedInstanceState.isEmpty()){
+        if(savedInstanceState != null){
             quizViewModel.moveCurrentIndex(savedInstanceState.getInt(KEY_INDEX, 0));
         }
 
@@ -93,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
         cheatButton.setOnClickListener(view -> {
             // start CheatActivity
+            Intent intent = new Intent(getApplicationContext(), CheatActivity.class);
+            startActivity(intent);
         });
 
 
