@@ -20,11 +20,13 @@ public class CheatActivity extends AppCompatActivity {
 
     private TextView answerTextView;
     private TextView apiTextView;
+    private TextView cheatCountTextView;
     private Button showAnswerButton;
 
     public CheatActivity() {
         answerTextView = null;
         apiTextView = null;
+        cheatCountTextView = null;
         showAnswerButton = null;
         cheatViewModel = null;
     }
@@ -36,22 +38,31 @@ public class CheatActivity extends AppCompatActivity {
 
         cheatViewModel = CheatViewModel.getInstance();
         answerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
+        cheatViewModel.setAnswerShown(getIntent().getBooleanExtra(EXTRA_ANSWER_SHOWN, false));
 
         answerTextView = findViewById(R.id.answer_text_view);
         apiTextView = findViewById(R.id.show_api_version);
+        cheatCountTextView = findViewById(R.id.show_cheat_count);
         showAnswerButton = findViewById(R.id.show_answer_button);
 
         showAnswerButton.setOnClickListener(view -> {
-            showAnswerText();
-            cheatViewModel.setAnswerShown(true);
-            setAnswerShownResult(cheatViewModel.isAnswerShown());
+            if(cheatViewModel.getCheatAvailableCount() > 0){
+                cheatViewModel.decreaseCheatAvailableCount();
+                showAnswerText();
+                cheatViewModel.setAnswerShown(true);
+                setAnswerShownResult(cheatViewModel.isAnswerShown());
+            }
+            cheatCountTextView.setText("커닝 가능 횟수 " + cheatViewModel.getCheatAvailableCount());
+
         });
 
+        cheatCountTextView.setText("커닝 가능 횟수 " + cheatViewModel.getCheatAvailableCount());
         apiTextView.append("API 레벨 " + Build.VERSION.SDK_INT);
 
         if(cheatViewModel.isAnswerShown()){
             showAnswerText();
             setAnswerShownResult(true);
+
         }
 
 
@@ -74,7 +85,8 @@ public class CheatActivity extends AppCompatActivity {
     }
 
 
-    public static Intent newIntent(Context packageContext, boolean answerIsTrue) {
-        return new Intent(packageContext, CheatActivity.class).putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+    public static Intent newIntent(Context packageContext, boolean answerIsTrue, boolean isAnswerShown) {
+        return new Intent(packageContext, CheatActivity.class).putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue)
+                .putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
     }
 }
