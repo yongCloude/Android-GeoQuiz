@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -113,7 +114,8 @@ public class MainActivity extends AppCompatActivity {
             // start CheatActivity
             boolean answerIsTrue = quizViewModel.getCurrentQuestion().isAnswer();
             Intent intent = CheatActivity.newIntent(getApplicationContext(), answerIsTrue);
-            activityResultLauncher.launch(intent);
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeClipRevealAnimation(view, 0, 0, view.getWidth(), view.getHeight());
+            activityResultLauncher.launch(intent, options);
 //            startActivity(intent);
         });
 
