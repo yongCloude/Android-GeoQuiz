@@ -15,7 +15,7 @@ public class QuizViewModel extends ViewModel {
     private int currentIndex;
     private int answeredNum;
     private int correctNum;
-가    private boolean isCheater = false;
+    private boolean isCheater = false;
 
 
     private QuizViewModel() {
