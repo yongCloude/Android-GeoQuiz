@@ -15,12 +15,15 @@ public class CheatActivity extends AppCompatActivity {
 
     private boolean answerIsTrue = false;
 
+    private CheatViewModel cheatViewModel;
+
     private TextView answerTextView;
     private Button showAnswerButton;
 
     public CheatActivity() {
         answerTextView = null;
         showAnswerButton = null;
+        cheatViewModel = null;
     }
 
     @Override
@@ -28,22 +31,33 @@ public class CheatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
 
+        cheatViewModel = CheatViewModel.getInstance();
         answerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
         answerTextView = findViewById(R.id.answer_text_view);
         showAnswerButton = findViewById(R.id.show_answer_button);
 
         showAnswerButton.setOnClickListener(view -> {
-            int answerText;
-            if(answerIsTrue == true){
-                answerText = R.string.true_button;
-            } else{
-                answerText = R.string.false_button;
-            }
-
-            answerTextView.setText(answerText);
-            setAnswerShownResult(true);
+            showAnswerText();
+            cheatViewModel.setAnswerShown(true);
+            setAnswerShownResult(cheatViewModel.isAnswerShown());
         });
+
+        if(cheatViewModel.isAnswerShown()){
+            showAnswerText();
+            setAnswerShownResult(true);
+        }
+
+    }
+
+    private void showAnswerText() {
+        int answerText;
+        if(answerIsTrue == true){
+            answerText = R.string.true_button;
+        } else{
+            answerText = R.string.false_button;
+        }
+        answerTextView.setText(answerText);
     }
 
     private void setAnswerShownResult(boolean isAnswerShown){
