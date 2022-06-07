@@ -15,6 +15,7 @@ public class QuizViewModel extends ViewModel {
     private int currentIndex;
     private int answeredNum;
     private int correctNum;
+가    private boolean isCheater = false;
 
 
     private QuizViewModel() {
@@ -78,5 +79,13 @@ public class QuizViewModel extends ViewModel {
 
     public void setCorrectNum(int correctNum) {
         this.correctNum = correctNum;
+    }
+
+    public boolean isCheater() {
+        return isCheater;
+    }
+
+    public void setCheater(boolean cheater) {
+        isCheater = cheater;
     }
 }
