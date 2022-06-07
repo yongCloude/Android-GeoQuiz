@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -112,10 +114,15 @@ public class MainActivity extends AppCompatActivity {
 
         cheatButton.setOnClickListener(view -> {
             // start CheatActivity
+
             boolean answerIsTrue = quizViewModel.getCurrentQuestion().isAnswer();
             Intent intent = CheatActivity.newIntent(getApplicationContext(), answerIsTrue);
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeClipRevealAnimation(view, 0, 0, view.getWidth(), view.getHeight());
-            activityResultLauncher.launch(intent, options);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeClipRevealAnimation(view, 0, 0, view.getWidth(), view.getHeight());
+                activityResultLauncher.launch(intent, options);
+            } else{
+                activityResultLauncher.launch(intent);
+            }
 //            startActivity(intent);
         });
 
