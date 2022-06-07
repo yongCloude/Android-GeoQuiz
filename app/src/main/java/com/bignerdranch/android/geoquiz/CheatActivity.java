@@ -2,6 +2,8 @@ package com.bignerdranch.android.geoquiz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class CheatActivity extends AppCompatActivity {
@@ -12,5 +14,10 @@ public class CheatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
+    }
+
+
+    public static Intent newIntent(Context packageContext, boolean answerIsTrue) {
+        return new Intent(packageContext, CheatActivity.class).putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue);
     }
 }
