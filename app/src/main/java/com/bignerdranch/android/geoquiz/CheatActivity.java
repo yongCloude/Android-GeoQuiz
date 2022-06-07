@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,10 +19,12 @@ public class CheatActivity extends AppCompatActivity {
     private CheatViewModel cheatViewModel;
 
     private TextView answerTextView;
+    private TextView apiTextView;
     private Button showAnswerButton;
 
     public CheatActivity() {
         answerTextView = null;
+        apiTextView = null;
         showAnswerButton = null;
         cheatViewModel = null;
     }
@@ -35,6 +38,7 @@ public class CheatActivity extends AppCompatActivity {
         answerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
         answerTextView = findViewById(R.id.answer_text_view);
+        apiTextView = findViewById(R.id.show_api_version);
         showAnswerButton = findViewById(R.id.show_answer_button);
 
         showAnswerButton.setOnClickListener(view -> {
@@ -43,10 +47,14 @@ public class CheatActivity extends AppCompatActivity {
             setAnswerShownResult(cheatViewModel.isAnswerShown());
         });
 
+        apiTextView.append("API 레벨 " + Build.VERSION.SDK_INT);
+
         if(cheatViewModel.isAnswerShown()){
             showAnswerText();
             setAnswerShownResult(true);
         }
+
+
 
     }
 
