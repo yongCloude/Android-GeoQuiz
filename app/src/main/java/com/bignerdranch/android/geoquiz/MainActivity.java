@@ -1,5 +1,7 @@
 package com.bignerdranch.android.geoquiz;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
     public static final String KEY_INDEX = "index";
+    public static final int RESULT_CODE_CHEAT = 0;
+
+    ActivityResultLauncher<Intent> activityResultLauncher;
 
     private Button trueButton;
     private Button falseButton;
@@ -33,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public MainActivity() {
+        this.activityResultLauncher = null;
+
         this.trueButton = null;
         this.falseButton = null;
         this.nextButton = null;
@@ -67,6 +74,16 @@ public class MainActivity extends AppCompatActivity {
         previosButton = findViewById(R.id.previous_button);
         cheatButton = findViewById(R.id.cheat_button);
 
+
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if(result.getResultCode() == RESULT_CODE_CHEAT){
+                Intent intent = result.getData();
+                if(intent != null){
+                    quizViewModel.setCheater(intent.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false));
+                }
+            }
+        });
+
         questionTextView.setOnClickListener(view -> {
             quizViewModel.moveCurrentIndex(1);
             updateQuestion();
@@ -96,8 +113,11 @@ public class MainActivity extends AppCompatActivity {
             // start CheatActivity
             boolean answerIsTrue = quizViewModel.getCurrentQuestion().isAnswer();
             Intent intent = CheatActivity.newIntent(getApplicationContext(), answerIsTrue);
-            startActivity(intent);
+            activityResultLauncher.launch(intent);
+//            startActivity(intent);
         });
+
+
 
 
         updateQuestion();
@@ -152,12 +172,19 @@ public class MainActivity extends AppCompatActivity {
         boolean correctAnswer = quizViewModel.getCurrentQuestion().isAnswer();
 
         int messageResId;
+
+
         if(quizViewModel.getCurrentQuestion().isAnswered() == false){
-            if(userAnswer == correctAnswer){
-                messageResId = R.string.correct_toast;
-                quizViewModel.setCorrectNum(quizViewModel.getCorrectNum() + 1);
-            } else{
-                messageResId = R.string.incorrect_toast;
+            if(quizViewModel.isCheater()){
+                messageResId = R.string.judgment_toast;
+            }
+            else{
+                if(userAnswer == correctAnswer){
+                    messageResId = R.string.correct_toast;
+                    quizViewModel.setCorrectNum(quizViewModel.getCorrectNum() + 1);
+                } else{
+                    messageResId = R.string.incorrect_toast;
+                }
             }
             quizViewModel.setAnsweredNum(quizViewModel.getAnsweredNum() + 1);
             quizViewModel.getCurrentQuestion().setAnswered(true);
